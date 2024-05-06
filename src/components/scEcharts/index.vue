@@ -58,6 +58,11 @@ export default {
       myChart.setOption(this.myOptions)
       this.myChart = myChart
       window.addEventListener('resize', () => myChart.resize())
+      let that = this
+      myChart.on('click', function (param) {
+        //使用that.$emit调用父组件方法
+        that.$emit('chartClick', param)
+      })
     },
   },
 }

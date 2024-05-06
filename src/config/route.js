@@ -4,28 +4,70 @@
 // routes 显示在左侧菜单中的路由(显示顺序在动态路由之前)
 // 示例如下
 
-// const routes = [
-// 	{
-// 		name: "demo",
-// 		path: "/demo",
-// 		meta: {
-// 			icon: "el-icon-eleme-filled",
-// 			title: "演示",
-// 			role: ["SA"]
-// 		},
-// 		children: [{
-// 			name: "demopage",
-// 			path: "/demopage",
-// 			component: "test/autocode/index",
-// 			meta: {
-// 				icon: "el-icon-menu",
-// 				title: "演示页面",
-// 				role: ["SA"]
-// 			}
-// 		}]
-// 	}
-// ]
+const routes = [
+  {
+    name: 'dataset',
+    path: '/dataset',
+    meta: {
+      icon: 'el-icon-eleme-filled',
+      title: '数据集管理',
+      role: ['SA'],
+    },
+    children: [
+      {
+        name: 'category',
+        path: '/dataset/category',
+        component: 'llm/dataset/category/index',
+        meta: {
+          icon: 'el-icon-switch',
+          title: '类别管理',
+          role: ['SA'],
+        },
+      },
+      {
+        name: 'fewshot',
+        path: '/data-set/fewshot',
+        component: 'llm/dataset/fewshot/index',
+        meta: {
+          icon: 'el-icon-aim',
+          title: 'Fewshot管理',
+          role: ['SA'],
+        },
+      },
+      {
+        name: 'prompt-templet',
+        path: '/dataset/prompt-templet',
+        component: 'llm/dataset/prompt-templet/index',
+        meta: {
+          icon: 'el-icon-notification',
+          title: 'Prompt模板',
+          role: ['SA'],
+        },
+      },
+      {
+        name: 'question',
+        path: '/dataset/question',
+        component: 'llm/dataset/question/index',
+        meta: {
+          icon: 'el-icon-Connection',
+          title: 'Question管理',
+          role: ['SA'],
+        },
+      },
+      {
+        name: 'sets',
+        path: '/dataset/set',
+        component: 'llm/dataset/set/index',
+        meta: {
+          icon: 'el-icon-Document',
+          title: 'Dataset管理',
+          role: ['SA'],
+        },
+      },
+    ],
+  },
+]
 
-const routes = []
+// const routes = []
 
 export default routes

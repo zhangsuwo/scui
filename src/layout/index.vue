@@ -214,7 +214,7 @@
 <script>
 import SideM from './components/sideM.vue'
 import Topbar from './components/topbar.vue'
-import Tags from './components/tags.vue'
+import Tags from './components/Tags.vue'
 import NavMenu from './components/NavMenu.vue'
 import userbar from './components/userbar.vue'
 import setting from './components/setting.vue'

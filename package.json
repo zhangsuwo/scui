@@ -18,6 +18,7 @@
     "crypto-js": "4.2.0",
     "echarts": "5.4.3",
     "element-plus": "2.4.3",
+    "json-editor-vue3": "^1.1.1",
     "nprogress": "0.2.0",
     "pinyin-match": "^1.2.5",
     "qrcodejs2": "0.0.2",

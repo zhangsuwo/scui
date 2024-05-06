@@ -1,7 +1,8 @@
 <template>
   <el-main>
     <el-card shadow="never" header="文件示例">
-      <sc-upload-file v-model="fileurl" :limit="3" :data="{ otherData: 'demo' }" tip="最多上传3个文件,单个文件不要超过10M,请上传xlsx/docx格式文件">
+      <sc-upload-file v-model="fileurl" :limit="3" :data="{ otherData: 'demo' }"
+        tip="最多上传3个文件,单个文件不要超过10M,请上传xlsx/docx格式文件">
         <el-button type="primary" icon="el-icon-upload">上传附件</el-button>
       </sc-upload-file>
     </el-card>
@@ -13,14 +14,16 @@
     </el-card>
 
     <el-card shadow="never" header="图片卡片示例(已开启拖拽排序)">
-      <sc-upload-multiple v-model="fileurl2" draggable :limit="3" tip="最多上传3个文件,单个文件不要超过10M,请上传图像格式文件"></sc-upload-multiple>
+      <sc-upload-multiple v-model="fileurl2" draggable :limit="3"
+        tip="最多上传3个文件,单个文件不要超过10M,请上传图像格式文件"></sc-upload-multiple>
     </el-card>
 
     <el-card shadow="never" header="单图像示例">
       <el-space wrap :size="8">
         <sc-upload v-model="fileurl3"></sc-upload>
         <sc-upload v-model="fileurl4" title="自定义标题" icon="el-icon-picture"></sc-upload>
-        <sc-upload v-model="fileurl5" :apiObj="uploadApi" accept="image/jpg,image/png" :on-success="success" :width="220">
+        <sc-upload v-model="fileurl5" :apiObj="uploadApi" accept="image/jpg,image/png" :on-success="success"
+          :width="220">
           <div class="custom-empty">
             <el-icon><el-icon-upload /></el-icon>
             <p>自定义插槽</p>
@@ -65,99 +68,99 @@
 </template>
 
 <script>
-export default {
-  name: 'upload',
-  data() {
-    return {
-      uploadApi: this.$API.common.upload,
-      fileurlArr: [
-        {
-          name: '销售合同模板.xlsx',
-          url: 'http://www.scuiadmin.com/files/220000198611262243.xlsx',
+  export default {
+    name: 'upload',
+    data () {
+      return {
+        uploadApi: this.$API.common.upload,
+        fileurlArr: [
+          {
+            name: '销售合同模板.xlsx',
+            url: 'http://www.scuiadmin.com/files/220000198611262243.xlsx',
+          },
+          {
+            name: '企业员工联系方式.xlsx',
+            url: 'http://www.scuiadmin.com/files/350000201004261875.xlsx',
+          },
+        ],
+        fileurl: 'http://www.scuiadmin.com/files/220000198611262243.xlsx,http://www.scuiadmin.com/files/350000201004261875.xlsx',
+        fileurl2: '@/assets/img/auth_banner.jpg,@/assets/img/avatar3.gif',
+        fileurl3: '@/assets/img/auth_banner.jpg',
+        fileurl4: '',
+        fileurl5: '',
+        fileurl6: '',
+        fileurl7: '',
+        form: {
+          file1: '',
+          file2: '',
+          file3: '',
+          file4: '',
+          date: '',
         },
-        {
-          name: '企业员工联系方式.xlsx',
-          url: 'http://www.scuiadmin.com/files/350000201004261875.xlsx',
+        rules: {
+          file1: [{ required: true, message: '请上传', trigger: 'change' }],
+          file2: [{ required: true, message: '请上传', trigger: 'change' }],
+          file3: [{ required: true, message: '请上传', trigger: 'change' }],
+          file4: [{ required: true, message: '请上传附件', trigger: 'change' }],
+          date: [{ required: true, message: '请选择日期', trigger: 'change' }],
         },
-      ],
-      fileurl: 'http://www.scuiadmin.com/files/220000198611262243.xlsx,http://www.scuiadmin.com/files/350000201004261875.xlsx',
-      fileurl2: '@/assets/img/auth_banner.jpg,@/assets/img/avatar3.gif',
-      fileurl3: '@/assets/img/auth_banner.jpg',
-      fileurl4: '',
-      fileurl5: '',
-      fileurl6: '',
-      fileurl7: '',
-      form: {
-        file1: '',
-        file2: '',
-        file3: '',
-        file4: '',
-        date: '',
+      }
+    },
+    methods: {
+      success (response) {
+        this.$alert(`success函数钩子，可用于类似OCR返回信息，return false后阻止后续执行，回调参数打开控制台查看`, {
+          title: '提示',
+          type: 'success',
+        })
+        console.log(response)
+        return false
       },
-      rules: {
-        file1: [{ required: true, message: '请上传', trigger: 'change' }],
-        file2: [{ required: true, message: '请上传', trigger: 'change' }],
-        file3: [{ required: true, message: '请上传', trigger: 'change' }],
-        file4: [{ required: true, message: '请上传附件', trigger: 'change' }],
-        date: [{ required: true, message: '请选择日期', trigger: 'change' }],
+      submitForm () {
+        this.$refs.ruleForm.validate((valid) => {
+          if (valid) {
+            alert('请看控制台输出')
+            console.log(this.form)
+          } else {
+            return false
+          }
+        })
       },
-    }
-  },
-  methods: {
-    success(response) {
-      this.$alert(`success函数钩子，可用于类似OCR返回信息，return false后阻止后续执行，回调参数打开控制台查看`, {
-        title: '提示',
-        type: 'success',
-      })
-      console.log(response)
-      return false
+      resetForm () {
+        this.$refs.ruleForm.resetFields()
+      },
     },
-    submitForm() {
-      this.$refs.ruleForm.validate((valid) => {
-        if (valid) {
-          alert('请看控制台输出')
-          console.log(this.form)
-        } else {
-          return false
-        }
-      })
-    },
-    resetForm() {
-      this.$refs.ruleForm.resetFields()
-    },
-  },
-}
+  }
 </script>
 
 <style scoped>
-.el-card + .el-card {
-  margin-top: 15px;
-}
+  .el-card+.el-card {
+    margin-top: 15px;
+  }
 
-.imglist .el-col + .el-col {
-  margin-left: 8px;
-}
+  .imglist .el-col+.el-col {
+    margin-left: 8px;
+  }
 
-.custom-empty {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #8c939d;
-  border-radius: 5px;
-}
+  .custom-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #8c939d;
+    border-radius: 5px;
+  }
 
-.custom-empty i {
-  font-size: 30px;
-  color: #fff;
-}
+  .custom-empty i {
+    font-size: 30px;
+    color: #fff;
+  }
 
-.custom-empty p {
-  font-size: 12px;
-  font-weight: normal;
-  color: #fff;
-  margin-top: 10px;
-}
+  .custom-empty p {
+    font-size: 12px;
+    font-weight: normal;
+    color: #fff;
+    margin-top: 10px;
+  }
 </style>
