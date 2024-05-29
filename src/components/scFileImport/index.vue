@@ -42,7 +42,7 @@ export default {
   props: {
     apiObj: { type: Object, default: () => {} },
     data: { type: Object, default: () => {} },
-    accept: { type: String, default: '.xls, .xlsx' },
+    accept: { type: String, default: '.csv, .json' },
     maxSize: { type: Number, default: 10 },
     tip: { type: String, default: '' },
     templateUrl: { type: String, default: '' },

@@ -11,7 +11,7 @@ export default {
     },
   },
   uploadFile: {
-    url: `${config.API_URL}/uploadFile`,
+    url: `${config.API_URL_BASE}/api/upload/file`,
     name: '附件上传',
     post: async function (data, config = {}) {
       // eslint-disable-next-line no-return-await
@@ -49,6 +49,40 @@ export default {
       get: async function (params) {
         // eslint-disable-next-line no-return-await
         return await http.get(this.url, params)
+      },
+    },
+  },
+  query: {
+    statSingleField: {
+      url: `${config.API_URL_BASE}/api/common/stat/single-field`,
+      name: 'statSingleField',
+      post: async function (params) {
+        // eslint-disable-next-line no-return-await
+        return await http.post(this.url, params)
+      },
+    },
+    statTwoField: {
+      url: `${config.API_URL_BASE}/api/common/stat/two-field`,
+      name: 'statTwoField',
+      post: async function (params) {
+        // eslint-disable-next-line no-return-await
+        return await http.post(this.url, params)
+      },
+    },
+    statFieldList: {
+      url: `${config.API_URL_BASE}/api/common/stat/field-list`,
+      name: 'statFieldList',
+      post: async function (params) {
+        // eslint-disable-next-line no-return-await
+        return await http.post(this.url, params)
+      },
+    },
+    queryKeyValueList: {
+      url: `${config.API_URL_BASE}/api/common/stat/key-value-list`,
+      name: 'queryKeyValueList',
+      get: async function (params) {
+        // eslint-disable-next-line no-return-await
+        return await http.post(this.url, params)
       },
     },
   },

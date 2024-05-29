@@ -13,7 +13,7 @@
       <el-icon class="is-loading"><el-icon-loading /></el-icon>
     </div>
     <el-select v-bind="$attrs" :loading="loading" @visible-change="visibleChange">
-      <el-option v-for="item in options" :key="item[props.value]" :label="item[props.label]" :value="objValueType ? item : item[props.value]">
+      <el-option v-for="item in options" :key="item[props.value]" :label="item[props.label]" :value="objValueType ? item[props.label] : item[props.value]">
         <slot name="option" :data="item"></slot>
       </el-option>
     </el-select>

@@ -13,11 +13,14 @@ const DEFAULT_CONFIG = {
   //内核版本号
   CORE_VER: '1.6.9',
 
-  //接口地址
-  API_URL: import.meta.env.VITE_NODE_ENV === 'development' && import.meta.env.VUE_APP_PROXY === 'true' ? '' : import.meta.env.VITE_APP_API_BASEURL,
+  //接口地址，此接口不变
+  API_URL: import.meta.env.VITE_NODE_ENV === 'development' && import.meta.env.VUE_APP_PROXY === 'true' ? '' : import.meta.env.VITE_APP_API,
+
+  //接口地址，业务使用此接口
+  API_URL_BASE: import.meta.env.VITE_NODE_ENV === 'development' && import.meta.env.VUE_APP_PROXY === 'true' ? '' : import.meta.env.VITE_APP_API_BASE,
 
   //请求超时
-  TIMEOUT: 10000,
+  TIMEOUT: 20000,
 
   //TokenName
   TOKEN_NAME: 'Authorization',

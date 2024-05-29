@@ -25,9 +25,9 @@ const routes = [
         },
       },
       {
-        name: 'fewshot',
-        path: '/data-set/fewshot',
-        component: 'llm/dataset/fewshot/index',
+        name: 'fewshots',
+        path: '/data-set/fewshots',
+        component: 'llm/dataset/fewshots/index',
         meta: {
           icon: 'el-icon-aim',
           title: 'Fewshot管理',

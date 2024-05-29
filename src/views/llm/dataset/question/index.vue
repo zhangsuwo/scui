@@ -1,127 +1,158 @@
 <template>
   <el-container>
-    <el-header>
-      <div class="left-panel">
-        <el-button type="primary" icon="el-icon-upload">上传文件</el-button>
-        <el-button type="primary" icon="el-icon-download">下载文件</el-button>
-        <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length == 0" @click="batch_del"></el-button>
-      </div>
-      <div class="right-panel">
-        <div class="right-panel-search">
-          <el-input v-model="search.keyword" placeholder="角色名称" clearable></el-input>
-          <el-button type="primary" icon="el-icon-search" @click="upsearch"></el-button>
+    <!-- <el-aside width="200px">
+      <el-container>
+        <el-main class="nopadding">
+          <el-tree ref="group" class="menu" node-key="id" :data="groupData" :current-node-key="''" :highlight-current="true" :expand-on-click-node="false" :filter-node-method="groupFilterNode" @node-click="groupClick"></el-tree>
+        </el-main>
+      </el-container>
+    </el-aside> -->
+    <el-container>
+      <el-header>
+        <div class="left-panel">
+          <scSelect v-model="tableData.query.fc" placeholder="一级分类" style="margin-right: 10px" :apiObj="categorySelect.apiObj" :params="categorySelect.fc" :objValueType="true" clearable filterable> </scSelect>
+          <scSelect v-model="tableData.query.sc" placeholder="二级分类" style="margin-right: 10px" :apiObj="categorySelect.apiObj" :params="categorySelect.sc" :objValueType="true" clearable filterable> </scSelect>
+          <scSelect v-model="tableData.query.tc" placeholder="三级分类" style="margin-right: 10px" :apiObj="categorySelect.apiObj" :params="categorySelect.tc" :objValueType="true" clearable filterable> </scSelect>
+          <scSelect v-model="tableData.query.type" placeholder="选择Type" style="margin-right: 10px" :apiObj="categorySelect.apiObj" :params="categorySelect.type" :objValueType="true" clearable filterable> </scSelect>
+          <el-button type="primary" icon="el-icon-search" @click="upsearch">查询</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="add">新增</el-button>
+          <sc-file-import :apiObj="$API.question.import" @success="handleImportSuccess"></sc-file-import>
+          <el-button type="primary" icon="el-icon-download">下载</el-button>
         </div>
-      </div>
-    </el-header>
-    <el-main class="nopadding">
-      <scTable ref="table" :data="tableData" row-key="id" stripe @selection-change="selectionChange">
-        <el-table-column label="id" prop="id" width="100"></el-table-column>
-        <el-table-column label="fristCategory" prop="fristCategory"></el-table-column>
-        <el-table-column label="secondCategory" prop="secondCategory"> </el-table-column>
-        <el-table-column label="thirdCategory" prop="thirdCategory"> </el-table-column>
-        <el-table-column label="type" prop="type"></el-table-column>
-        <el-table-column label="question" prop="question" width="200"></el-table-column>
-        <el-table-column label="options" prop="options"></el-table-column>
-        <el-table-column label="answer" prop="answer"></el-table-column>
-        <el-table-column label="createAt" prop="createAt"></el-table-column>
-        <el-table-column label="状态" prop="status">
-          <template #default="scope">
-            <el-switch v-model="scope.row.status" :loading="scope.row.$switch_status" active-value="1" inactive-value="0" @change="changeSwitch($event, scope.row)"></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" fixed="right" align="right" width="170">
-          <template #default="scope">
-            <el-button-group>
-              <el-button text type="primary" size="small" @click="table_show(scope.row, scope.$index)">查看</el-button>
-              <el-button text type="primary" size="small" @click="table_edit(scope.row, scope.$index)">编辑</el-button>
-              <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
-                <template #reference>
-                  <el-button text type="primary" size="small">删除</el-button>
-                </template>
-              </el-popconfirm>
-            </el-button-group>
-          </template>
-        </el-table-column>
-      </scTable>
-    </el-main>
+      </el-header>
+      <el-main class="nopadding">
+        <scTable ref="table" :apiObj="tableData.apiObj" :params="tableData.query" row-key="id" stripe highlightCurrentRow @selection-change="selectionChange">
+          <el-table-column label="id" prop="id" width="100"></el-table-column>
+          <el-table-column label="一级分类" prop="fc">
+            <template #default="scope">
+              {{ scope.row.fc }}
+            </template>
+          </el-table-column>
+          <el-table-column label="二级分类" prop="sc">
+            <template #default="scope">
+              {{ scope.row.sc }}
+            </template>
+          </el-table-column>
+          <el-table-column label="三级分类" prop="tc">
+            <template #default="scope">
+              {{ scope.row.tc }}
+            </template>
+          </el-table-column>
+          <el-table-column label="类型" prop="type">
+            <template #default="scope">
+              {{ scope.row.type }}
+            </template>
+          </el-table-column>
+          <el-table-column label="问题" prop="question" show-overflow-tooltip>
+            <template #default="scope">
+              {{ scope.row.question }}
+            </template>
+          </el-table-column>
+          <el-table-column label="选项" prop="options" show-overflow-tooltip>
+            <template #default="scope">
+              {{ scope.row.options }}
+            </template>
+          </el-table-column>
+          <el-table-column label="答案" prop="answer" show-overflow-tooltip>
+            <template #default="scope">
+              {{ scope.row.answer }}
+            </template>
+          </el-table-column>
+          <el-table-column label="解析" prop="explain" show-overflow-tooltip>
+            <template #default="scope">
+              {{ scope.row.explain }}
+            </template>
+          </el-table-column>
+          <el-table-column label="扩展" prop="extend" show-overflow-tooltip>
+            <template #default="scope">
+              {{ scope.row.extend }}
+            </template>
+          </el-table-column>
+          <el-table-column label="生成时间" prop="createdAt" width="150">
+            <template #default="scope">
+              {{ formatDate(scope.row.createdAt) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" prop="isEnable">
+            <template #default="scope">
+              <el-switch v-model="scope.row.isEnable" disabled="true"></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" align="right" width="160">
+            <template #default="scope">
+              <el-button-group>
+                <el-button text type="primary" size="small" @click="table_show(scope.row, scope.$index)">查看</el-button>
+                <el-button text type="primary" size="small" @click="table_edit(scope.row, scope.$index)">编辑</el-button>
+                <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
+                  <template #reference>
+                    <el-button text type="primary" size="small">删除</el-button>
+                  </template>
+                </el-popconfirm>
+              </el-button-group>
+            </template>
+          </el-table-column>
+        </scTable>
+      </el-main>
+    </el-container>
+    <save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save = false"></save-dialog>
   </el-container>
-
-  <save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save = false"></save-dialog>
 </template>
 
 <script>
 import saveDialog from './save'
+import tool from '@/utils/tool'
+import scFileImport from '@/components/scFileImport'
 
 export default {
   name: 'question',
   components: {
     saveDialog,
+    scFileImport,
   },
   data() {
     return {
       dialog: {
         save: false,
       },
-      tableData: [
-        {
-          id: 2000001,
-          fristCategory: '高阶能力-闲聊题',
-          secondCategory: '无解问题',
-          thirdCategory: 'search_poi',
-          type: '单选题',
-          question: '6. 将 5 名北京冬奥会志愿者分配到花样滑冰，短道速滑、冰球和冰显 4 个项目进行培训, 每名 志愿者只分配到 1 个项目, 每个项目至少分配 1 名志愿者, 则不同的分配方案共有（）\n\nA. 60 种\n\nB. 120 种\n\nC. 240 种\n\nD. 480 种\n',
-          options: [{ A: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { B: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { C: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { D: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }],
-          answer: 'A',
-          status: '1',
-          createAt: '2024/04/25 12:00:00',
+      tableData: {
+        apiObj: this.$API.question.list,
+        query: {
+          fc: '',
+          sc: '',
+          tc: '',
+          type: '',
+          name: '',
         },
-        {
-          id: 2000002,
-          fristCategory: '高阶能力-闲聊题',
-          secondCategory: '无解问题',
-          thirdCategory: 'search_poi',
-          type: '单选题',
-          question: '6. 将 5 名北京冬奥会志愿者分配到花样滑冰，短道速滑、冰球和冰显 4 个项目进行培训, 每名 志愿者只分配到 1 个项目, 每个项目至少分配 1 名志愿者, 则不同的分配方案共有（）\n\nA. 60 种\n\nB. 120 种\n\nC. 240 种\n\nD. 480 种\n',
-          options: [{ A: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { B: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { C: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { D: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }],
-          answer: 'A',
-          status: '1',
-          createAt: '2024/04/25 12:00:00',
-        },
-        {
-          id: 2000003,
-          fristCategory: '高阶能力-闲聊题',
-          secondCategory: '无解问题',
-          thirdCategory: 'search_poi',
-          type: '单选题',
-          question: '6. 将 5 名北京冬奥会志愿者分配到花样滑冰，短道速滑、冰球和冰显 4 个项目进行培训, 每名 志愿者只分配到 1 个项目, 每个项目至少分配 1 名志愿者, 则不同的分配方案共有（）\n\nA. 60 种\n\nB. 120 种\n\nC. 240 种\n\nD. 480 种\n',
-          options: [{ A: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { B: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { C: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }, { D: 'As a pirate captain, what would you say to your crew to motivate them to search for hidden treasure?' }],
-          answer: 'A',
-          status: '1',
-          createAt: '2024/04/25 12:00:00',
-        },
-      ],
-      selection: [],
-      search: {
-        keyword: null,
       },
-      groupData: [
-        {
-          id: 0,
-          label: '基础能力-闲聊题.json',
+      categorySelect: {
+        apiObj: this.$API.common.query.queryKeyValueList,
+        fc: {
+          firstField: '0',
+          secondField: 'fc',
+          tableName: 'questions',
+          conditions: 'fc is not null and fc <> ""',
         },
-        {
-          id: 1,
-          label: '基础能力-基础题.json',
+        sc: {
+          firstField: '0',
+          secondField: 'sc',
+          tableName: 'questions',
+          conditions: 'sc is not null and sc <> ""',
         },
-        {
-          id: 2,
-          label: '基础能力-选择题.json',
+        tc: {
+          firstField: '0',
+          secondField: 'tc',
+          tableName: 'questions',
+          conditions: 'tc is not null and tc <> ""',
         },
-        {
-          id: 3,
-          label: '学科综合-mmlu.json',
+        type: {
+          firstField: '0',
+          secondField: 'type',
+          tableName: 'questions',
+          conditions: 'type is not null and type <> ""',
         },
-      ],
+      },
+      selection: [],
+      groupData: [],
     }
   },
   methods: {
@@ -149,8 +180,8 @@ export default {
     //删除
     async table_del(row) {
       var reqData = { id: row.id }
-      var res = await this.$API.demo.post.post(reqData)
-      if (res.code === 200) {
+      var res = await this.$API.question.delete.post(reqData)
+      if (res.code === 0) {
         this.$refs.table.refresh()
         this.$message.success('删除成功')
       } else {
@@ -185,22 +216,8 @@ export default {
       }, 500)
     },
     //搜索
-    upsearch() {},
-    //根据ID获取树结构
-    filterTree(id) {
-      var target = null
-      function filter(tree) {
-        tree.forEach((item) => {
-          if (item.id === id) {
-            target = item
-          }
-          if (item.children) {
-            filter(item.children)
-          }
-        })
-      }
-      filter(this.$refs.table.tableData)
-      return target
+    upsearch() {
+      this.$refs.table.reload(this.tableData.query)
     },
     //本地更新数据
     handleSaveSuccess(data, mode) {
@@ -210,8 +227,35 @@ export default {
         this.$refs.table.refresh()
       }
     },
+    //导入数据成功
+    handleImportSuccess(res, close) {
+      if (res.code === 0) {
+        this.$alert('共' + res.data.length + '条数据，导入成功' + res.data.offset + '条数据', '导入成功', {
+          type: 'success',
+          showClose: false,
+          center: true,
+        })
+        close()
+      } else {
+        //返回失败后的自定义操作，这里演示显示错误的条目
+        this.$alert('共' + res.data.length + '条数据，导入成功' + res.data.offset + '条数据', '导入失败', {
+          type: 'error',
+          showClose: false,
+          center: true,
+        })
+      }
+    },
+    //日期格式化
+    formatDate(date) {
+      return tool.dateFormat(date)
+    },
   },
 }
 </script>
 
-<style></style>
+<style lang="scss">
+/*修改show-overflow-tooltip默认width*/
+.el-popper {
+  max-width: 50% !important;
+}
+</style>

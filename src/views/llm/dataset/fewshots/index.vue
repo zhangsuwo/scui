@@ -1,42 +1,33 @@
 <template>
   <el-container>
-    <el-header class="header-tabs">
-      <el-tabs v-model="tabID" type="card" @tab-change="tabChange">
-        <el-tab-pane label="一级分类" name="1"></el-tab-pane>
-        <el-tab-pane label="二级分类" name="2"></el-tab-pane>
-        <el-tab-pane label="三级分类" name="3"></el-tab-pane>
-        <el-tab-pane label="Type" name="4"></el-tab-pane>
-      </el-tabs>
-    </el-header>
     <el-header>
-      <div class="left-panel">
-        <!-- <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length == 0" @click="batch_del"></el-button> -->
-      </div>
+      <div class="left-panel"></div>
       <div class="right-panel">
-        <div class="right-panel-search">
-          <el-button type="primary" icon="el-icon-search" @click="upsearch">查询</el-button>
-          <el-button type="primary" icon="el-icon-plus" @click="add">新增</el-button>
-          <!-- <el-input v-model="search.keyword" placeholder="名称" clearable></el-input> -->
-        </div>
+        <el-button type="primary" icon="el-icon-search" @click="upsearch">查询</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="add">新增</el-button>
+        <!-- <el-button type="primary" icon="el-icon-upload">上传</el-button> -->
+        <sc-file-import :apiObj="$API.common.uploadFile" @success="success"></sc-file-import>
+        <el-button type="primary" icon="el-icon-download">下载</el-button>
       </div>
     </el-header>
     <el-main class="nopadding">
-      <scTable ref="table" :apiObj="tableData.apiObj" :params="tableData.query" row-key="id" stripe highlightCurrentRow @selection-change="selectionChange">
-        <el-table-column type="selection" width="50"></el-table-column>
-        <el-table-column label="ID" prop="id" width="100"></el-table-column>
-        <el-table-column label="名称" prop="name"></el-table-column>
-        <el-table-column label="类型" prop="type" width="100"></el-table-column>
-        <el-table-column label="状态" prop="isEnable" width="100">
+      <scTable ref="table" :apiObj="list.apiObj" :params="list.query" row-key="id" stripe highlightCurrentRow @selection-change="selectionChange">
+        <el-table-column label="id" prop="id" width="100">
           <template #default="scope">
-            <el-switch v-model="scope.row.isEnable" disabled="true"></el-switch>
+            {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column label="生成时间" prop="createdAt" width="150">
+        <el-table-column label="内容" prop="content" width="900">
+          <template #default="scope">
+            {{ scope.row.content }}
+          </template>
+        </el-table-column>
+        <el-table-column label="生成时间" prop="createdAt">
           <template #default="scope">
             {{ formatDate(scope.row.createdAt) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" align="right" width="170">
+        <el-table-column label="操作" fixed="right" width="170">
           <template #default="scope">
             <el-button-group>
               <el-button text type="primary" size="small" @click="table_show(scope.row, scope.$index)">查看</el-button>
@@ -58,31 +49,27 @@
 <script>
 import saveDialog from './save'
 import tool from '@/utils/tool'
+import scFileImport from '@/components/scFileImport'
 
 export default {
-  name: 'category',
+  name: 'fewshots',
   components: {
     saveDialog,
+    scFileImport,
   },
   data() {
     return {
       dialog: {
         save: false,
       },
-      tableData: {
-        apiObj: this.$API.category.list,
-        query: {
-          type: 1,
-        },
+      list: {
+        apiObj: this.$API.fewshots.list,
+        query: {},
       },
+      tableData: [],
       selection: [],
-      search: {
-        keyword: null,
-      },
-      tabID: '1',
     }
   },
-  mounted() {},
   methods: {
     //添加
     add() {
@@ -108,7 +95,7 @@ export default {
     //删除
     async table_del(row) {
       var reqData = { id: row.id }
-      var res = await this.$API.category.delete.post(reqData)
+      var res = await this.$API.fewshots.delete.post(reqData)
       if (res.code === 0) {
         this.$refs.table.refresh()
         this.$message.success('删除成功')
@@ -116,26 +103,13 @@ export default {
         this.$alert(res.message, '提示', { type: 'error' })
       }
     },
-    //批量删除
-    async batch_del() {
-      this.$confirm(`确定删除选中的 ${this.selection.length} 项吗？如果删除项中含有子集将会被一并删除`, '提示', {
-        type: 'warning',
-      })
-        .then(() => {
-          const loading = this.$loading()
-          this.$refs.table.refresh()
-          loading.close()
-          this.$message.success('操作成功')
-        })
-        .catch(() => {})
+    //搜索
+    upsearch() {
+      this.$refs.table.reload(this.list.query)
     },
     //表格选择后回调事件
     selectionChange(selection) {
       this.selection = selection
-    },
-    //搜索
-    upsearch() {
-      this.$refs.table.refresh()
     },
     //本地更新数据
     handleSaveSuccess(data, mode) {
@@ -145,10 +119,22 @@ export default {
         this.$refs.table.refresh()
       }
     },
-    //标签切换
-    tabChange(name) {
-      this.tableData.query.type = parseInt(name)
-      this.$refs.table.reload(this.tableData.query)
+    success(res, close) {
+      if (res.code === 0) {
+        this.$alert('导入返回成功后，可后续操作，比如刷新表格等。执行回调函数close()可关闭上传窗口。', '导入成功', {
+          type: 'success',
+          showClose: false,
+          center: true,
+        })
+        close()
+      } else {
+        //返回失败后的自定义操作，这里演示显示错误的条目
+        this.$alert('导入失败', '导入失败', {
+          type: 'error',
+          showClose: false,
+          center: true,
+        })
+      }
     },
     //日期格式化
     formatDate(date) {

@@ -145,6 +145,11 @@ tool.objCopy = function (obj) {
   return JSON.parse(JSON.stringify(obj))
 }
 
+/*JSON对象字段是否为对象*/
+tool.isObjectField = function (jsonObj, fieldName) {
+  return typeof jsonObj[fieldName] === 'object' && jsonObj[fieldName] !== null
+}
+
 /* 日期格式化 */
 tool.dateFormat = function (date, fmt = 'yyyy-MM-dd hh:mm:ss') {
   date = new Date(date)

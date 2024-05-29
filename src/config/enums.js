@@ -1,19 +1,20 @@
 export default {
   categoryType: [
     {
-      "label": 'Type',
-      "value": 0
+      label: '一级分类',
+      value: 1,
     },
     {
-      "label": 'FristCategory',
-      "value": 1
-    }, {
-      "label": 'SecondCategory',
-      "value": 2
+      label: '二级分类',
+      value: 2,
     },
     {
-      "label": 'ThridCategory',
-      "value": 3
-    }
-  ]
+      label: '三级分类',
+      value: 3,
+    },
+    {
+      label: 'Type',
+      value: 4,
+    },
+  ],
 }
